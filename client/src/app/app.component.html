@@ -1,0 +1,8 @@
+<h1>{{title}}</h1>
+
+<ul>
+    <li *ngFor="let user of users">
+        use ngFor {{user.id}} - {{user.userName}}
+    </li>
+    @for (user of users; track user.id) {<li>use regular for {{user.id}} - {{user.userName}}</li>}
+</ul>

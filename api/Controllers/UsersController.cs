@@ -29,4 +29,17 @@ public class UsersController(DataContext context) : BaseApiController
 
         return user;
     }
+
+    // [AllowAnonymous]
+    // [HttpDelete("delete/{id}")]
+    // public async Task<ActionResult<string>> DeleteUser(int id)
+    // {
+    //     var user = await context.Users.FindAsync(id);
+    //     if (user == null) return NotFound();
+
+    //     context.Users.Remove(user);
+    //     await context.SaveChangesAsync();
+
+    //     return Ok("User delete successfully");
+    // }
 }

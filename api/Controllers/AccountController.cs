@@ -18,22 +18,23 @@ public class AccountController(DataContext context, ITokenService tokenService) 
 
         if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
         using var hmac = new HMACSHA512(); // "using" statement is for using only this method
+        
+        return Ok();
+        // var user = new AppUser
+        // {
+        //     UserName = registerDto.Username.ToLower(),
+        //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+        //     PasswordSalt = hmac.Key
+        // };
 
-        var user = new AppUser
-        {
-            UserName = registerDto.Username.ToLower(),
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            PasswordSalt = hmac.Key
-        };
+        // context.Users.Add(user);
+        // await context.SaveChangesAsync();
 
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
-
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token = tokenService.CreateToken(user)
-        };
+        // return new UserDto
+        // {
+        //     Username = user.UserName,
+        //     Token = tokenService.CreateToken(user)
+        // };
     }
 
     [HttpPost("login")]

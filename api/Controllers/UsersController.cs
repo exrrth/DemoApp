@@ -1,5 +1,8 @@
 ﻿using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,38 +11,30 @@ namespace API.Controllers;
 
 // [ApiController]
 // [Route("api/[controller]")] // localhost:5001/api/users
-public class UsersController(DataContext context) : BaseApiController
+////// public class UsersController(DataContext context) : BaseApiController
+
+[Authorize]
+public class UsersController(IUserRepository userRepository) : BaseApiController
+
 {
-    [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
-        var users = await context.Users.ToListAsync();
+        var users = await userRepository.GetMembersAsync();
+
+        // var usersToReturn = mapper.Map<IEnumerable<MemberDto>>(users);
 
         return Ok(users); // or can use -- return (users);
     }
 
-    [Authorize]
-    [HttpGet("{id}")] // api/users/1
-    public async Task<ActionResult<AppUser>> GetUser(int id)
+    [HttpGet("{username}")] // api/users/{username}
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        var user = await context.Users.FindAsync(id);
+        var user = await userRepository.GetMemberAsync(username);
 
-        if (user == null) return NotFound();
+        if (user == null) return NotFound(); //GetUserByUsernameAsync could return null so it has to put "if" statement
 
+        // return mapper.Map<MemberDto>(user);
         return user;
     }
-
-    // [AllowAnonymous]
-    // [HttpDelete("delete/{id}")]
-    // public async Task<ActionResult<string>> DeleteUser(int id)
-    // {
-    //     var user = await context.Users.FindAsync(id);
-    //     if (user == null) return NotFound();
-
-    //     context.Users.Remove(user);
-    //     await context.SaveChangesAsync();
-
-    //     return Ok("User delete successfully");
-    // }
 }

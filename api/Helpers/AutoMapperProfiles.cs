@@ -16,5 +16,7 @@ public class AutoMapperProfiles : Profile
                                                                                 // o represents the mapping options
                                                                                 // s represents the source object (Photo)
         CreateMap<Photo, PhotoDto>(); // map from Photo to PhotoDto
+
+        CreateMap<MemberUpdateDto, AppUser>(); // map from MemberUpdateDto to AppUser for each updated section
     }
 }

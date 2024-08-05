@@ -1,4 +1,5 @@
-﻿using API.Data;
+﻿using System.Security.Claims;
+using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -14,7 +15,7 @@ namespace API.Controllers;
 ////// public class UsersController(DataContext context) : BaseApiController
 
 [Authorize]
-public class UsersController(IUserRepository userRepository) : BaseApiController
+public class UsersController(IUserRepository userRepository, IMapper mapper) : BaseApiController
 
 {
     [HttpGet]
@@ -32,9 +33,29 @@ public class UsersController(IUserRepository userRepository) : BaseApiController
     {
         var user = await userRepository.GetMemberAsync(username);
 
-        if (user == null) return NotFound(); //GetUserByUsernameAsync could return null so it has to put "if" statement
+        if (user == null) return NotFound(); // GetUserByUsernameAsync could return null so it has to put "if" statement
 
         // return mapper.Map<MemberDto>(user);
         return user;
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+    {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // find cliam (token) of that user then take the username (ex. lisa)
+
+        if (username == null) return BadRequest("No username found in token");
+
+        var user = await userRepository.GetUserByUsernameAsync(username);
+
+        if (user == null) return BadRequest("Could not find user");
+
+        mapper.Map(memberUpdateDto, user); // map from memberUpdateDto to user object
+
+        // userRepository.Update(user); // not using this bcz don't want user to send "unchanged" data // it will return 204status anyway
+
+        if (await userRepository.SaveAllAsync()) return NoContent();
+
+        return BadRequest("Failed to update the user");
     }
 }

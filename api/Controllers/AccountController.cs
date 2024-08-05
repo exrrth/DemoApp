@@ -17,7 +17,7 @@ public class AccountController(DataContext context, ITokenService tokenService) 
     {
 
         if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
-        using var hmac = new HMACSHA512(); // "using" statement is for using only this method
+        using var hmac = new HMACSHA512(); // "using" statement is for using only in this method
         
         return Ok();
         // var user = new AppUser

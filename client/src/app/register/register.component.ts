@@ -15,9 +15,9 @@ export class RegisterComponent {
   private toastr = inject(ToastrService);
 
   // usersFromHomeComponent = input.required<any>;
-  // @Input() usersFromHomeComponent2: any
+  // @Input() usersFromHomeComponent2: any // parent component to child component
 
-  cancelRegister = output<boolean>(); // child to parent --> @Output() cancelRegister = new EventEmiiter();  //old way
+  cancelRegister = output<boolean>(); // child component to parent component --> @Output() cancelRegister = new EventEmiiter();  //old way
   model: any = {};
 
   stringTest = input.required<string>
@@ -29,7 +29,8 @@ export class RegisterComponent {
         this.cancel();
         this.toastr.success("User create succesfully");
       },
-      error: error => {this.toastr.error(error.error);
+      error: error => {this.toastr.error(error);
+      console.log(error);
       this.toastr.error("Please fill the form")}
     })
   }

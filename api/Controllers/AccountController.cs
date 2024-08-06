@@ -18,7 +18,7 @@ public class AccountController(DataContext context, ITokenService tokenService) 
 
         if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
         using var hmac = new HMACSHA512(); // "using" statement is for using only in this method
-        
+
         return Ok();
         // var user = new AppUser
         // {
@@ -40,7 +40,9 @@ public class AccountController(DataContext context, ITokenService tokenService) 
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
+        var user = await context.Users
+            .Include(p => p.Photos) // give main photo when return UserDto
+                .FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
         if (user == null) return Unauthorized("Invalid username");
 
@@ -56,7 +58,8 @@ public class AccountController(DataContext context, ITokenService tokenService) 
         return new UserDto
         {
             Username = user.UserName,
-            Token = tokenService.CreateToken(user)
+            Token = tokenService.CreateToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
         };
     }
 

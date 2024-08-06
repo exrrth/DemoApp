@@ -21,7 +21,7 @@ export class NavComponent {
   model: any = {};
 
   login() {
-    console.log(this.model); // model คือไรวะ ขออีกรอบ
+    console.log(this.model); // model is coming from ngModel (input of user)
     this.accountService.login(this.model).subscribe({
       next: _ => {
         this.router.navigateByUrl('/members')

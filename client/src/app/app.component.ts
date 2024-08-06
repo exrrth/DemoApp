@@ -14,24 +14,17 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-
-  
   private accountService = inject(AccountService);
-  title = 'DatingApp';
-  
 
   ngOnInit(): void {
     this.setCurrentUser();
   }
 
-  setCurrentUser(){
+  setCurrentUser() {
     const userSting = localStorage.getItem('user');
-    if(!userSting) return;
+    if (!userSting) return;
 
     const user = JSON.parse(userSting);
     this.accountService.currentUser.set(user);
   }
-
-  
-
 }

@@ -18,5 +18,9 @@ public class AutoMapperProfiles : Profile
         CreateMap<Photo, PhotoDto>(); // map from Photo to PhotoDto
 
         CreateMap<MemberUpdateDto, AppUser>(); // map from MemberUpdateDto to AppUser for each updated section
+
+        CreateMap<RegisterDto, AppUser>(); // map from RegisterDto to AppUser for new user register
+
+        CreateMap<string, DateOnly>().ConvertUsing(s => DateOnly.Parse(s)); // convert DateOfBirth in string type to DateOnly
     }
 }
